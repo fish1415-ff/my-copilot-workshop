@@ -4,6 +4,31 @@ const todoInput = document.querySelector("#todo-input");
 const todoList = document.querySelector("#todo-list");
 const emptyState = document.querySelector("#empty-state");
 const remainingCount = document.querySelector("#remaining-count");
+const themeToggle = document.querySelector("#theme-toggle");
+const filterBar = document.querySelector(".filter-bar");
+const themeStorageKey = "my-copilot-workshop-theme";
+const colorSchemeQuery = window.matchMedia("(prefers-color-scheme: dark)");
+
+let activeFilter = "all";
+let themePreference = loadThemePreference();
+
+function loadThemePreference() {
+  try {
+    const savedTheme = localStorage.getItem(themeStorageKey);
+    return savedTheme === "light" || savedTheme === "dark" ? savedTheme : null;
+  } catch {
+    return null;
+  }
+}
+
+function applyTheme() {
+  const theme = themePreference || (colorSchemeQuery.matches ? "dark" : "light");
+  document.documentElement.dataset.theme = theme;
+  themeToggle.setAttribute("aria-pressed", String(theme === "dark"));
+  themeToggle.innerHTML = theme === "dark"
+    ? '<span aria-hidden="true">☀️</span><span>淺色模式</span>'
+    : '<span aria-hidden="true">🌙</span><span>深色模式</span>';
+}
 
 // 載入本機待辦資料；資料格式不正確時以空清單開始。
 function loadTodos() {
@@ -39,7 +64,19 @@ function saveTodos() {
 function renderTodos() {
   todoList.replaceChildren();
 
-  for (const todo of todos) {
+  const visibleTodos = todos.filter((todo) => {
+    if (activeFilter === "active") {
+      return !todo.completed;
+    }
+
+    if (activeFilter === "completed") {
+      return todo.completed;
+    }
+
+    return true;
+  });
+
+  for (const todo of visibleTodos) {
     const item = document.createElement("li");
     item.className = `todo-item${todo.completed ? " is-complete" : ""}`;
     item.dataset.id = todo.id;
@@ -68,8 +105,55 @@ function renderTodos() {
 
   const remaining = todos.filter((todo) => !todo.completed).length;
   remainingCount.textContent = `未完成:${remaining} 項`;
-  emptyState.hidden = todos.length > 0;
+  emptyState.hidden = visibleTodos.length > 0;
+
+  if (todos.length === 0) {
+    emptyState.textContent = "還沒有任何待辦事項，新增一個吧！";
+  } else if (activeFilter === "active") {
+    emptyState.textContent = "沒有未完成的待辦事項。";
+  } else if (activeFilter === "completed") {
+    emptyState.textContent = "沒有已完成的待辦事項。";
+  } else {
+    emptyState.textContent = "沒有符合條件的待辦事項。";
+  }
 }
+
+themeToggle.addEventListener("click", () => {
+  const currentTheme = document.documentElement.dataset.theme;
+  themePreference = currentTheme === "dark" ? "light" : "dark";
+
+  try {
+    localStorage.setItem(themeStorageKey, themePreference);
+  } catch {
+    // 瀏覽器停用本機儲存時，主題仍可在目前頁面切換。
+  }
+
+  applyTheme();
+});
+
+colorSchemeQuery.addEventListener("change", () => {
+  if (!themePreference) {
+    applyTheme();
+  }
+});
+
+filterBar.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-filter]");
+
+  if (!button) {
+    return;
+  }
+
+  activeFilter = button.dataset.filter;
+
+  for (const filterButton of filterBar.querySelectorAll("[data-filter]")) {
+    const isActive = filterButton === button;
+    filterButton.classList.toggle("is-active", isActive);
+    filterButton.setAttribute("aria-pressed", String(isActive));
+  }
+
+  renderTodos();
+});
 
 todoForm.addEventListener("submit", (event) => {
   event.preventDefault();
@@ -120,4 +204,5 @@ todoList.addEventListener("click", (event) => {
   renderTodos();
 });
 
+applyTheme();
 renderTodos();

@@ -5,16 +5,48 @@
   --color-ink: #18352e;
   --color-muted: #71847d;
   --color-line: #e4ece8;
+  --color-input: #fbfdfc;
+  --color-placeholder: #9aa9a2;
   --color-accent: #177c63;
   --color-accent-hover: #10664f;
+  --color-on-accent: #ffffff;
   --color-accent-soft: #e5f4ee;
   --color-delete: #a45d50;
+  --color-delete-hover: #fbefec;
+  --color-completed: #a0ada7;
+  --color-card-border: rgb(255 255 255 / 82%);
+  --color-focus: rgb(23 124 99 / 28%);
+  --color-page-glow: rgb(199 231 215 / 58%);
+  --color-page-glow-secondary: rgb(246 224 197 / 42%);
   --shadow-card: 0 18px 54px rgb(27 68 53 / 10%), 0 2px 8px rgb(27 68 53 / 5%);
   font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --color-page: #17231f;
+  --color-card: #22332d;
+  --color-ink: #e4eee9;
+  --color-muted: #a3b6ad;
+  --color-line: #3a4d44;
+  --color-input: #1b2a24;
+  --color-placeholder: #82968c;
+  --color-accent: #65c4a3;
+  --color-accent-hover: #7bd2b2;
+  --color-on-accent: #173329;
+  --color-accent-soft: #29483c;
+  --color-delete: #e09a8b;
+  --color-delete-hover: #4a332f;
+  --color-completed: #82968c;
+  --color-card-border: rgb(255 255 255 / 7%);
+  --color-focus: rgb(101 196 163 / 36%);
+  --color-page-glow: rgb(43 91 69 / 38%);
+  --color-page-glow-secondary: rgb(100 76 48 / 24%);
+  --shadow-card: 0 18px 54px rgb(0 0 0 / 24%), 0 2px 8px rgb(0 0 0 / 14%);
 }
 
 * {
@@ -27,8 +59,8 @@ body {
   margin: 0;
   color: var(--color-ink);
   background:
-    radial-gradient(ellipse at 12% 10%, rgb(199 231 215 / 58%), transparent 35%),
-    radial-gradient(ellipse at 88% 88%, rgb(246 224 197 / 42%), transparent 32%),
+    radial-gradient(ellipse at 12% 10%, var(--color-page-glow), transparent 35%),
+    radial-gradient(ellipse at 88% 88%, var(--color-page-glow-secondary), transparent 32%),
     var(--color-page);
 }
 
@@ -46,7 +78,7 @@ input {
 .todo-card {
   overflow: hidden;
   padding: 36px 36px 0;
-  border: 1px solid rgb(255 255 255 / 82%);
+  border: 1px solid var(--color-card-border);
   border-radius: 16px;
   background: var(--color-card);
   box-shadow: var(--shadow-card);
@@ -55,6 +87,13 @@ input {
 
 .card-header {
   margin-bottom: 28px;
+}
+
+.header-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
 }
 
 .eyebrow {
@@ -69,6 +108,26 @@ h1 {
   font-size: 30px;
   font-weight: 750;
   line-height: 1.25;
+}
+
+.theme-toggle {
+  display: inline-flex;
+  min-height: 38px;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 10px;
+  border: 1px solid var(--color-line);
+  border-radius: 8px;
+  color: var(--color-ink);
+  background: var(--color-card);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.theme-toggle:hover {
+  background: var(--color-accent-soft);
 }
 
 .add-form {
@@ -86,12 +145,12 @@ h1 {
   border-radius: 8px;
   outline: none;
   color: var(--color-ink);
-  background: #fbfdfc;
+  background: var(--color-input);
   transition: border-color 150ms ease, box-shadow 150ms ease;
 }
 
 .add-form input::placeholder {
-  color: #9aa9a2;
+  color: var(--color-placeholder);
 }
 
 .add-form input:focus-visible {
@@ -109,7 +168,7 @@ h1 {
   padding: 0 15px;
   border: 0;
   border-radius: 8px;
-  color: #fff;
+  color: var(--color-on-accent);
   background: var(--color-accent);
   font-weight: 700;
   cursor: pointer;
@@ -128,6 +187,35 @@ h1 {
   font-size: 20px;
   font-weight: 400;
   line-height: 1;
+}
+
+.filter-bar {
+  display: flex;
+  gap: 6px;
+  margin: -6px 0 12px;
+}
+
+.filter-button {
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  color: var(--color-muted);
+  background: transparent;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.filter-button:hover {
+  color: var(--color-ink);
+  background: var(--color-accent-soft);
+}
+
+.filter-button.is-active {
+  border-color: var(--color-line);
+  color: var(--color-accent);
+  background: var(--color-accent-soft);
+  font-weight: 700;
 }
 
 .todo-list {
@@ -165,7 +253,7 @@ h1 {
 }
 
 .todo-item.is-complete .todo-text {
-  color: #a0ada7;
+  color: var(--color-completed);
   text-decoration: line-through;
 }
 
@@ -182,13 +270,15 @@ h1 {
 }
 
 .delete-button:hover {
-  background: #fbefec;
+  background: var(--color-delete-hover);
 }
 
+.theme-toggle:focus-visible,
+.filter-button:focus-visible,
 .delete-button:focus-visible,
 .add-button:focus-visible,
 .todo-checkbox:focus-visible {
-  outline: 3px solid rgb(23 124 99 / 28%);
+  outline: 3px solid var(--color-focus);
   outline-offset: 2px;
 }
 
@@ -265,6 +355,11 @@ h1 {
 
   h1 {
     font-size: 27px;
+  }
+
+  .theme-toggle {
+    padding: 0 8px;
+    font-size: 12px;
   }
 }
 
