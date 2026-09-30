@@ -11,7 +11,7 @@
 
 ## 🌐 線上展示
 
-**https://<你的帳號>.github.io/<你的repo名稱>/**
+**https://fish1415-ff.github.io/my-copilot-workshop/**
 
 > ⚠️ 請把上面這行換成你自己的 GitHub Pages 網址(Step 5 動手做 B 拿到的那個)。
 
