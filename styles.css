@@ -275,6 +275,7 @@ h1 {
 
 .theme-toggle:focus-visible,
 .filter-button:focus-visible,
+.clear-completed-button:focus-visible,
 .delete-button:focus-visible,
 .add-button:focus-visible,
 .todo-checkbox:focus-visible {
@@ -307,6 +308,27 @@ h1 {
   color: var(--color-muted);
   font-size: 13px;
   font-variant-numeric: tabular-nums;
+}
+
+.clear-completed-button {
+  min-height: 36px;
+  margin-left: auto;
+  padding: 0 9px;
+  border: 1px solid var(--color-line);
+  border-radius: 6px;
+  color: var(--color-delete);
+  background: transparent;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.clear-completed-button:hover:not(:disabled) {
+  background: var(--color-delete-hover);
+}
+
+.clear-completed-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
 }
 
 .page-note {
