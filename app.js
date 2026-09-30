@@ -4,6 +4,7 @@ const todoInput = document.querySelector("#todo-input");
 const todoList = document.querySelector("#todo-list");
 const emptyState = document.querySelector("#empty-state");
 const remainingCount = document.querySelector("#remaining-count");
+const clearCompletedButton = document.querySelector("#clear-completed");
 const themeToggle = document.querySelector("#theme-toggle");
 const filterBar = document.querySelector(".filter-bar");
 const themeStorageKey = "my-copilot-workshop-theme";
@@ -104,7 +105,9 @@ function renderTodos() {
   }
 
   const remaining = todos.filter((todo) => !todo.completed).length;
+  const completedCount = todos.length - remaining;
   remainingCount.textContent = `未完成:${remaining} 項`;
+  clearCompletedButton.disabled = completedCount === 0;
   emptyState.hidden = visibleTodos.length > 0;
 
   if (todos.length === 0) {
@@ -200,6 +203,22 @@ todoList.addEventListener("click", (event) => {
 
   const item = deleteButton.closest(".todo-item");
   todos = todos.filter((todo) => todo.id !== item.dataset.id);
+  saveTodos();
+  renderTodos();
+});
+
+clearCompletedButton.addEventListener("click", () => {
+  const completedCount = todos.filter((todo) => todo.completed).length;
+
+  if (completedCount === 0) {
+    return;
+  }
+
+  if (!window.confirm(`確定要清除 ${completedCount} 項已完成的待辦事項嗎？`)) {
+    return;
+  }
+
+  todos = todos.filter((todo) => !todo.completed);
   saveTodos();
   renderTodos();
 });
